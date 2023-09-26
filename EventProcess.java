@@ -26,9 +26,9 @@ public class EventProcess extends Event {
             queue -= 1;
             state = 1;
             tstate = tcurr + getDelay();
-            if (next != null) {
-                next.inAct(tcurr);
-            }
+        }
+        if (next != null) {
+            next.inAct(tcurr);
         }
     }
 
