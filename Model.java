@@ -4,15 +4,12 @@ import java.util.ArrayList;
 public class Model {
     private double tnext;
     private double tcurr;
-
-    private int state;
     private List <Event> events = new ArrayList<>();
 
     public Model(Event create, List<Event> process) {
         tnext=0.0;
         tcurr = tnext;
         events.add(create);
-        state = 0;
         for (Event event : process) {
             events.add(event);
         }
@@ -69,6 +66,10 @@ public class Model {
             }
             System.out.println();
         }
+    }
+
+    public double getTcurr() {
+        return tcurr;
     }
 
 }
