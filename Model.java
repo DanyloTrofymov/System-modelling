@@ -1,6 +1,5 @@
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class Model {
     private double tnext;
@@ -26,7 +25,7 @@ public class Model {
     public void simulate(double timeModeling){
         while(tcurr<timeModeling) {
             tnext = Double.MAX_VALUE;       // Час наступної події
-            Event nextEvent = events.get(0);      // Найближча подія
+            Event nextEvent = null;         // Подія, яка станеться найближчою
 
             for (Event event : events) {
                 if (event.tstate < tnext) {
@@ -34,33 +33,41 @@ public class Model {
                     nextEvent = event;
                 }
             }
-
+            System.out.println("\nIt's time for event in " +
+                    nextEvent.name +
+                    ", time = " + tnext);
+            for (Event e : events) {
+                e.doStatistics(tnext - tcurr);
+            }
             tcurr = tnext;      // перехід в момент tnext
 
-            for (int i = 0; i < events.size(); i++) {
-                if (Objects.equals(events.get(i).name, nextEvent.name)) {
-                    Event next = null;
-                    Event prev = null;
-                    if (i < events.size() - 1) {
-                        next = events.get(i + 1);
-                    }
-                    if (i > 0) {
-                        prev = events.get(i - 1);
-                    }
-                    state = events.get(i).serve(tcurr, state, prev, next);
-                    break;
+            for (Event event : events) {
+                if(event.tstate == tcurr) {
+                    event.outAct(tcurr);
                 }
             }
-            if (state == 1) {
-                nextEvent.printInfo();
-            }
+            printInfo();
         }
-        printStatistic(timeModeling);
+        printResult();
     }
-
-    public void printStatistic(double timeModeling){
-        for (Event event : events) {
-            event.printStatistic(timeModeling);
+    public void printInfo() {
+        for (Event e : events) {
+            if(e.state == 1)
+                e.printInfo();
+        }
+    }
+    public void printResult() {
+        System.out.println("\n-------------RESULTS-------------");
+        for (Event e : events) {
+            e.printResult();
+            if (e instanceof EventProcess) {
+                EventProcess p = (EventProcess) e;
+                System.out.println("mean length of queue = " +
+                        p.meanQueue / tcurr
+                        + "\nfailure probability = " +
+                        p.failure / (double) p.served);
+            }
+            System.out.println();
         }
     }
 

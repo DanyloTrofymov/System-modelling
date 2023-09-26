@@ -3,27 +3,43 @@ public class EventProcess extends Event {
         super(delay, name, maxQueue);
     }
 
-    public int serve(double tcurr, int state, Event prev, Event nextEvent) {
-        super.serve(tcurr, state, prev, nextEvent);
-        state = 0;
-        tstate = Double.MAX_VALUE;
-        if (queue > 0) {
-            queue--;
+    @Override
+    public void inAct(double tcurr) {
+        if (state == 0) {
             state = 1;
-            double time = getDelay();
-            tstate = tcurr + time;
-            totalProcessingTime += time;
-            if (nextEvent != null) {
-                time = nextEvent.getDelay();
-                nextEvent.tstate = tcurr + time;
-                totalProcessingTime += time;
-                if(nextEvent.queue < nextEvent.maxQueue) {
-                    nextEvent.queue++;
-                } else {
-                    nextEvent.failure++;
-                }
+            tstate = tcurr + getDelay();
+        } else {
+            if (queue < maxQueue) {
+                queue += 1;
+            } else {
+                failure++;
             }
         }
-        return state;
     }
+
+    @Override
+    public void outAct(double tcurr) {
+        super.outAct(tcurr);
+        tstate = Double.MAX_VALUE;
+        state = 0;
+        if (queue > 0) {
+            queue -= 1;
+            state = 1;
+            tstate = tcurr + getDelay();
+            if (next != null) {
+                next.inAct(tcurr);
+            }
+        }
+    }
+
+    @Override
+    public void doStatistics(double delta) {
+        meanQueue = meanQueue + queue * delta;
+    }
+    @Override
+    public void printResult() {
+        super.printResult();
+        System.out.println("failure = " + this.failure);
+    }
+
 }

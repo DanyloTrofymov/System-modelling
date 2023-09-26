@@ -1,6 +1,6 @@
 public class Event {
-    protected double tstate, delay, totalProcessingTime;
-    protected int queue, maxQueue, failure, served;
+    protected double meanQueue, tstate, delay;
+    protected int state, queue, maxQueue, failure, served;
     protected Event next;
     protected String name;
 
@@ -8,29 +8,38 @@ public class Event {
         this.delay = delay;
         maxQueue = 0;
         this.name = name;
-        tstate = Double.MAX_VALUE;
+        tstate = 0;
         next = null;
+
     }
     public Event(double delay, String name, int maxQueue) {
         this.delay = delay;
         this.maxQueue = maxQueue;
         this.name = name;
-        tstate = Double.MAX_VALUE;
+        tstate = 0;
         next = null;
     }
 
-    protected int serve (double tcurr, int state, Event prev, Event next) {
-        served++;
-        return state;
+    public void inAct(double tcurr) {
     }
-
+    public void outAct(double tcurr){
+        served++;
+    }
     protected void printInfo() {
-        System.out.println("Event = " + name + " tstate = " + tstate + " queue: " + queue);
+        System.out.println("Event = " + name + " tnext = " + tstate + " queue: " + queue + " state = " + state);
     }
     protected void printStatistic(double timeModeling){
-        System.out.println("Event = " + name + " computed= " + served + " failure = "+failure + " avgProcessingTime = " + totalProcessingTime / timeModeling);
+        System.out.println("Event = " + name + " served = " + served + " failure = "+failure);
+    }
+    public void printResult(){
+        System.out.println(name+ " served = "+ served);
     }
 
+    public void doStatistics(double delta){
+    }
+    public void setNextElement(Event nextElement) {
+        this.next = nextElement;
+    }
     protected double getDelay() {
         return FunRand.exp(delay);
     }
