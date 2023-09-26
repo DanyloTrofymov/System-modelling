@@ -1,12 +1,10 @@
 import java.util.*;
 
 public class EventProcess extends Event {
-    private int countOfWorkers;
     private List<Integer> workerStates = new ArrayList<>();
     private List<Double> workersTnext = new ArrayList<>();
     public EventProcess(double delay, String name, int maxQueue, int countOfWorkers) {
         super(delay, name, maxQueue);
-        this.countOfWorkers = countOfWorkers;
         tstate = Double.MAX_VALUE;
         for (int i = 0; i < countOfWorkers; i++) {
             workerStates.add(0);
