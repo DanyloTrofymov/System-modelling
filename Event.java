@@ -1,3 +1,5 @@
+import java.util.List;
+
 public class Event {
     protected double meanQueue, tstate, delay;
     protected int state, queue, maxQueue, failure, served;
@@ -22,7 +24,7 @@ public class Event {
 
     public void inAct(double tcurr) {
     }
-    public void outAct(double tcurr){
+    public void outAct(double tcurr, List<Event> events){
         served++;
     }
     protected void printInfo() {

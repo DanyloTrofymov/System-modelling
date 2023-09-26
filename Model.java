@@ -40,7 +40,7 @@ public class Model {
 
             for (Event event : events) {
                 if(event.tstate == tcurr) {
-                    event.outAct(tcurr);
+                    event.outAct(tcurr, events);
                 }
             }
             printInfo();
@@ -67,9 +67,4 @@ public class Model {
             System.out.println();
         }
     }
-
-    public double getTcurr() {
-        return tcurr;
-    }
-
 }

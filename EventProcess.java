@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class EventProcess extends Event {
     private int countOfWorkers;
@@ -33,9 +30,24 @@ public class EventProcess extends Event {
         }
     }
 
+    public void setNextEvent(List <Event> events) {
+        int processEventsCount = events.size() - 1;
+        double step = 1.0 / processEventsCount;
+        double randomNumber = Math.random();
+        for (int i = 0; i < processEventsCount; i++) {
+            if (randomNumber >= i * step && randomNumber < (i + 1) * step) {
+                Event nextEvent = events.get(i + 1);
+                if(!Objects.equals(nextEvent.name, this.name)) {
+                    next = nextEvent;
+                }
+                break;
+            }
+        }
+    }
+
     @Override
-    public void outAct(double tcurr) {
-        super.outAct(tcurr);
+    public void outAct(double tcurr, List <Event> events) {
+        super.outAct(tcurr, events);
         int workerIndex = workersTnext.indexOf(tcurr);
         workerStates.set(workerIndex, 0);
         workersTnext.set(workerIndex, Double.MAX_VALUE);
@@ -46,6 +58,7 @@ public class EventProcess extends Event {
             workersTnext.set(workerIndex, tcurr + getDelay());
             tstate = Collections.min(workersTnext);
         }
+        setNextEvent(events);
         if (next != null) {
             next.inAct(tcurr);
         }
