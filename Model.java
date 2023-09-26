@@ -65,7 +65,7 @@ public class Model {
                 System.out.println("mean length of queue = " +
                         p.meanQueue / tcurr
                         + "\nfailure probability = " +
-                        p.failure / (double) p.served);
+                        p.failure / ((double) p.served + p.failure));
             }
             System.out.println();
         }
