@@ -63,7 +63,7 @@ public class Model {
                         p.meanQueue / tcurr
                         + "\nfailure probability = " +
                         p.failure / ((double) p.served + p.failure) +
-                        "\nwork time percent = " + p.totalWorkTime / timeModeling);
+                        "\nload time = " + p.totalWorkTime / timeModeling);
             }
             System.out.println();
         }
