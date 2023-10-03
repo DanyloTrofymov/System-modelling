@@ -36,7 +36,7 @@ public class Model {
             for (Event e : events) {
                 e.doStatistics(tnext - tcurr);
             }
-            tcurr = tnext;      // перехід в момент tnext
+            tcurr = tnext;
 
             for (Event event : events) {
                 if(event.tstate == tcurr) {
@@ -45,7 +45,7 @@ public class Model {
             }
             printInfo();
         }
-        printResult();
+        printResult(timeModeling);
     }
     public void printInfo() {
         for (Event e : events) {
@@ -53,7 +53,7 @@ public class Model {
                 e.printInfo();
         }
     }
-    public void printResult() {
+    public void printResult( double timeModeling) {
         System.out.println("\n-------------RESULTS-------------");
         for (Event e : events) {
             e.printResult();
@@ -62,7 +62,8 @@ public class Model {
                 System.out.println("mean length of queue = " +
                         p.meanQueue / tcurr
                         + "\nfailure probability = " +
-                        p.failure / ((double) p.served + p.failure));
+                        p.failure / ((double) p.served + p.failure) +
+                        "\nwork time percent = " + p.totalWorkTime / timeModeling);
             }
             System.out.println();
         }

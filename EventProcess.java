@@ -17,7 +17,8 @@ public class EventProcess extends Event {
         int workerIndex = workerStates.indexOf(0);
         if (workerIndex != -1) {
             workerStates.set(workerIndex, 1);
-            workersTnext.set(workerIndex, tcurr + getDelay());
+            double delay = getDelay();
+            workersTnext.set(workerIndex, tcurr + delay);
             tstate = Collections.min(workersTnext);
         } else {
             if (queue < maxQueue) {
@@ -53,7 +54,9 @@ public class EventProcess extends Event {
         if (queue > 0) {
             queue -= 1;
             workerStates.set(workerIndex, 1);
-            workersTnext.set(workerIndex, tcurr + getDelay());
+            double delay = getDelay();
+            totalWorkTime += delay;
+            workersTnext.set(workerIndex, tcurr + delay);
             tstate = Collections.min(workersTnext);
         }
         setNextEvent(events);

@@ -7,7 +7,9 @@ public class EventCreate extends Event{
     @Override
     public void outAct(double tcurr, List<Event> events) {
         super.outAct(tcurr, events);
-        tstate = tcurr + getDelay();
+        double delay = getDelay();
+        totalWorkTime += delay;
+        tstate = tcurr + delay;
         next.inAct(tcurr);
     }
     @Override

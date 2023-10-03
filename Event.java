@@ -1,7 +1,7 @@
 import java.util.List;
 
 public class Event {
-    protected double meanQueue, tstate, delay;
+    protected double meanQueue, tstate, delay, totalWorkTime;
     protected int state, queue, maxQueue, failure, served;
     protected Event next;
     protected String name;
