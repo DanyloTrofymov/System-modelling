@@ -71,7 +71,7 @@ public class MultiTaskProcessor extends Element {
     }
 
     @Override
-    public void setNextElement(Element element) {
+    public void setNextElement(NextElements element) {
         for (Process process : processes) {
             process.setNextElement(element);
         }

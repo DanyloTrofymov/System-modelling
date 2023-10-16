@@ -12,7 +12,7 @@ public class Process extends Element {
             this.tstate = tcurr + delay;
             totalWorkTime += delay;
             if (this.next != null) {
-                this.next.inAct(tcurr);
+                this.next.getNextElement().inAct(tcurr);
             }
     }
 

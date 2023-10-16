@@ -17,9 +17,15 @@ public class Main {
         MultiTaskProcessor multiTaskProcessor2 = new MultiTaskProcessor(List.of(process2_1, process2_2, process2_3), "MultiProcess2", 5);
         MultiTaskProcessor multiTaskProcessor3 = new MultiTaskProcessor(List.of(process3_1, process3_2, process3_3), "MultiProcess3", 5);
 
-        create.setNextElement(multiTaskProcessor1);
-        multiTaskProcessor1.setNextElement(multiTaskProcessor2);
-        multiTaskProcessor2.setNextElement(multiTaskProcessor3);
+        NextElement nextElement = new NextElement(multiTaskProcessor1, 0.5, 3);
+        NextElement nextElement1 = new NextElement(multiTaskProcessor2, 0.2, 1);
+        NextElement nextElement2 = new NextElement(multiTaskProcessor3, 0.3, 2);
+
+        NextElements nextElements = new NextElements(List.of(nextElement, nextElement1, nextElement2), NextElementsType.PROBABILITY);
+
+        create.setNextElement(nextElements);
+        multiTaskProcessor1.setNextElement(nextElements);
+        multiTaskProcessor2.setNextElement(nextElements);
 
         List<MultiTaskProcessor> multiTaskProcessors = List.of(multiTaskProcessor1, multiTaskProcessor2, multiTaskProcessor3);
         Model model = new Model(create, multiTaskProcessors);

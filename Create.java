@@ -10,7 +10,7 @@ public class Create extends Element{
         double delay = getDelay();
         totalWorkTime += delay;
         tstate = tcurr + delay;
-        next.inAct(tcurr);
+        next.getNextElement().inAct(tcurr);
     }
     @Override
     public void doStatistics(double delta) {

@@ -3,7 +3,7 @@ import java.util.List;
 public class Element {
     protected double meanQueue, tstate, delay, totalWorkTime;
     protected int state, queue, maxQueue, failure, served;
-    protected Element next;
+    protected NextElements next;
 
     protected String name;
 
@@ -48,7 +48,7 @@ public class Element {
 
     public void doStatistics(double delta){
     }
-    public void setNextElement(Element next) {
+    public void setNextElement(NextElements next) {
         this.next = next;
     }
 
