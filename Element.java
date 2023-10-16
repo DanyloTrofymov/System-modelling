@@ -5,6 +5,8 @@ public class Element {
     protected int state, queue, maxQueue, failure, served;
     protected NextElements next;
 
+    protected DistributionType distributionType;
+
     protected String name;
 
     public Element(String name) {
@@ -52,9 +54,21 @@ public class Element {
         this.next = next;
     }
 
-
     protected double getDelay() {
-        return FunRand.exp(delay);
+        switch (distributionType) {
+            case EXPONENTIAL:
+                return FunRand.exp(delay);
+            case UNIFORM:
+                return FunRand.unif(delay+delay*0.1, delay-delay*0.1);
+            case NORMAL:
+                return FunRand.norm(delay, 0.4);
+            default:
+                return FunRand.exp(delay);
+        }
+    }
+
+    public void setDistributionType(DistributionType distributionType) {
+        this.distributionType = distributionType;
     }
 
     protected void setTstate(double tstate) {
