@@ -1,9 +1,9 @@
-import java.util.*;
+/*import java.util.*;
 
-public class EventProcess extends Event {
+public class Process_old extends Element {
     private List<Integer> workerStates = new ArrayList<>();
     private List<Double> workersTnext = new ArrayList<>();
-    public EventProcess(double delay, String name, int maxQueue, int countOfWorkers) {
+    public Process_old(double delay, String name, int maxQueue, int countOfWorkers) {
         super(delay, name, maxQueue);
         tstate = Double.MAX_VALUE;
         for (int i = 0; i < countOfWorkers; i++) {
@@ -29,15 +29,15 @@ public class EventProcess extends Event {
         }
     }
 
-    public void setNextEvent(List <Event> events) {
-        int processEventsCount = events.size() - 1;
-        double step = 1.0 / processEventsCount;
+    public void setNextElement(List <Element> events) {
+        int processElementsCount = events.size() - 1;
+        double step = 1.0 / processElementsCount;
         double randomNumber = Math.random();
-        for (int i = 0; i < processEventsCount; i++) {
+        for (int i = 0; i < processElementsCount; i++) {
             if (randomNumber >= i * step && randomNumber < (i + 1) * step) {
-                Event nextEvent = events.get(i + 1);
-                if(!Objects.equals(nextEvent.name, this.name)) {
-                    next = nextEvent;
+                Element nextElement = events.get(i + 1);
+                if(!Objects.equals(nextElement.name, this.name)) {
+                    next = nextElement;
                 }
                 break;
             }
@@ -45,7 +45,7 @@ public class EventProcess extends Event {
     }
 
     @Override
-    public void outAct(double tcurr, List <Event> events) {
+    public void outAct(double tcurr, List <Element> events) {
         super.outAct(tcurr, events);
         int workerIndex = workersTnext.indexOf(tcurr);
         workerStates.set(workerIndex, 0);
@@ -59,7 +59,7 @@ public class EventProcess extends Event {
             workersTnext.set(workerIndex, tcurr + delay);
             tstate = Collections.min(workersTnext);
         }
-        setNextEvent(events);
+        setNextElement(events);
         if (next != null) {
             next.inAct(tcurr);
         }
@@ -75,4 +75,4 @@ public class EventProcess extends Event {
         System.out.println("failure = " + this.failure);
     }
 
-}
+}*/

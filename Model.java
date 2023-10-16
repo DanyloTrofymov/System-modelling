@@ -4,14 +4,14 @@ import java.util.ArrayList;
 public class Model {
     private double tnext;
     private double tcurr;
-    private List <Event> events = new ArrayList<>();
+    private List <Element> elements = new ArrayList<>();
 
-    public Model(Event create, List<Event> process) {
+    public Model(Element create, List<Element> process) {
         tnext=0.0;
         tcurr = tnext;
-        events.add(create);
-        for (Event event : process) {
-            events.add(event);
+        elements.add(create);
+        for (Element element : process) {
+            elements.add(element);
         }
     }
 
@@ -22,25 +22,25 @@ public class Model {
     public void simulate(double timeModeling){
         while(tcurr<timeModeling) {
             tnext = Double.MAX_VALUE;       // Час наступної події
-            Event nextEvent = null;         // Подія, яка станеться найближчою
+            Element nextElement = null;         // Подія, яка станеться найближчою
 
-            for (Event event : events) {
-                if (event.tstate < tnext) {
-                    tnext = event.tstate;
-                    nextEvent = event;
+            for (Element element : elements) {
+                if (element.tstate < tnext) {
+                    tnext = element.tstate;
+                    nextElement = element;
                 }
             }
-            System.out.println("\nIt's time for event in " +
-                    nextEvent.name +
+            System.out.println("\nIt's time for element in " +
+                    nextElement.name +
                     ", time = " + tnext);
-            for (Event e : events) {
+            for (Element e : elements) {
                 e.doStatistics(tnext - tcurr);
             }
             tcurr = tnext;
 
-            for (Event event : events) {
-                if(event.tstate == tcurr) {
-                    event.outAct(tcurr, events);
+            for (Element element : elements) {
+                if(element.tstate == tcurr) {
+                    element.outAct(tcurr);
                 }
             }
             printInfo();
@@ -48,17 +48,17 @@ public class Model {
         printResult(timeModeling);
     }
     public void printInfo() {
-        for (Event e : events) {
+        for (Element e : elements) {
             if(e.state == 1)
                 e.printInfo();
         }
     }
     public void printResult( double timeModeling) {
         System.out.println("\n-------------RESULTS-------------");
-        for (Event e : events) {
+        for (Element e : elements) {
             e.printResult();
-            if (e instanceof EventProcess) {
-                EventProcess p = (EventProcess) e;
+            if (e instanceof MultiProcess) {
+                MultiProcess p = (MultiProcess) e;
                 System.out.println("mean length of queue = " +
                         p.meanQueue / tcurr
                         + "\nfailure probability = " +
