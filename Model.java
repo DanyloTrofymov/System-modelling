@@ -6,7 +6,7 @@ public class Model {
     private double tcurr;
     private List <Element> elements = new ArrayList<>();
 
-    public Model(Element create, List<Element> process) {
+    public Model(Create create, List<MultiTaskProcessor> process) {
         tnext=0.0;
         tcurr = tnext;
         elements.add(create);
@@ -57,13 +57,16 @@ public class Model {
         System.out.println("\n-------------RESULTS-------------");
         for (Element e : elements) {
             e.printResult();
-            if (e instanceof MultiProcess) {
-                MultiProcess p = (MultiProcess) e;
+            if (e instanceof MultiTaskProcessor) {
+                MultiTaskProcessor p = (MultiTaskProcessor) e;
                 System.out.println("mean length of queue = " +
                         p.meanQueue / tcurr
                         + "\nfailure probability = " +
                         p.failure / ((double) p.served + p.failure) +
-                        "\nload time = " + p.totalWorkTime / timeModeling);
+                        "\nawg load time = " + p.getTotalWorkTime() / p.getProucessCount() / timeModeling);
+                for (Process process : p.getProcesses()) {
+                    System.out.println("load time in " + process.name + " = " + process.totalWorkTime / timeModeling);
+                }
             }
             System.out.println();
         }

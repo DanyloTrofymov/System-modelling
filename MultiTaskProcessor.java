@@ -1,24 +1,19 @@
 import java.util.*;
 
-public class MultiProcess extends Element {
+public class MultiTaskProcessor extends Element {
     private List<Process> processes;
 
     protected int queue, maxQueue;
-    public MultiProcess(List<Process> processes, String name) {
+    public MultiTaskProcessor(List<Process> processes, String name) {
         super(name);
         this.processes = processes;
         setTState();
     }
-    public MultiProcess(List<Process> processes, String name, int maxQueue, boolean disableQueueForProcesses) {
+    public MultiTaskProcessor(List<Process> processes, String name, int maxQueue) {
         super(name);
         this.processes = processes;
         this.maxQueue = maxQueue;
         setTState();
-        if (disableQueueForProcesses) {
-            for (Process process : processes) {
-                process.hasOwnQueue = false;
-            }
-        }
     }
     @Override
     public void inAct(double tcurr) {
@@ -96,5 +91,21 @@ public class MultiProcess extends Element {
         }
         System.out.println(name+ " served = "+ totalServed);
         System.out.println("failure = " + this.failure);
+    }
+
+    public double getTotalWorkTime() {
+        double totalWorkTime = 0;
+        for (Process process : processes) {
+            totalWorkTime += process.totalWorkTime;
+        }
+        return  totalWorkTime;
+    }
+
+    public int getProucessCount() {
+        return processes.size();
+    }
+
+    public List<Process> getProcesses() {
+        return processes;
     }
 }
