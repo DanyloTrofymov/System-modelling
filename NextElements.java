@@ -9,7 +9,7 @@ public class NextElements {
             for (NextElement nextElement : nextElements) {
                 sum += nextElement.probability;
             }
-            if (sum != 1) {
+            if (sum != 0 && sum != 1) {
                 throw new IllegalArgumentException("Sum of probabilities must be 1");
             }
         }
@@ -20,15 +20,17 @@ public class NextElements {
     public Element getNextElement() {
         switch (type) {
             case PRIORITY:
-                return getPriorityElement();
+                return getPriorityElement(nextElements);
             case PROBABILITY:
                 return getProbabilityElement();
+            case PRIORITY_WITH_QUEUE:
+                return getPriorityWithQueueElement();
             default:
                 throw new IllegalArgumentException("Unknown type");
         }
     }
 
-    private Element getPriorityElement() {
+    private Element getPriorityElement(List<NextElement> nextElements) {
         Element element = null;
         int maxPriority = Integer.MIN_VALUE;
         for (NextElement nextElement : nextElements) {
@@ -38,6 +40,30 @@ public class NextElements {
             }
         }
         return element;
+    }
+
+    private Element getPriorityWithQueueElement() {
+        Element element = null;
+        List<NextElement> lowestQueueElements = getElementsWithLowestQueue();
+        element = getPriorityElement(lowestQueueElements);
+        return element;
+    }
+
+    private List<NextElement> getElementsWithLowestQueue() {
+        List<NextElement> lowestQueueElements = new ArrayList<>();
+        int lowestQueue = Integer.MAX_VALUE;
+
+        for (NextElement nextElement : nextElements) {
+            if (nextElement.element.queue < lowestQueue) {
+                lowestQueue = nextElement.element.queue;
+                lowestQueueElements.clear(); // Clear the previous list as we found a lower queue
+                lowestQueueElements.add(nextElement);
+            } else if (nextElement.element.queue == lowestQueue) {
+                lowestQueueElements.add(nextElement);
+            }
+        }
+
+        return lowestQueueElements;
     }
 
     private Element getProbabilityElement() {

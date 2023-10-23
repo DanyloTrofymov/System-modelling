@@ -1,4 +1,5 @@
 public enum NextElementsType {
     PRIORITY,
-    PROBABILITY
+    PROBABILITY,
+    PRIORITY_WITH_QUEUE,
 }
