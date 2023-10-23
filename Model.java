@@ -7,10 +7,12 @@ public class Model {
     int changeQueue = 0;
     private List <Element> elements = new ArrayList<>();
     private List <MultiTaskProcessor> processes;
-    public Model(Create create, List<MultiTaskProcessor> process) {
+
+    private NextElements create;
+    public Model(NextElements create, List<MultiTaskProcessor> process) {
         tnext=0.0;
         tcurr = tnext;
-        elements.add(create);
+        this.create = create;
         for (Element element : process) {
             elements.add(element);
         }
@@ -23,6 +25,10 @@ public class Model {
      */
     public void simulate(double timeModeling){
         while(tcurr<timeModeling) {
+            ArrayList<Element> elements = new ArrayList<>();
+            elements.add(create.getNextElement());
+            elements.addAll(processes);
+
             tnext = Double.MAX_VALUE;       // Час наступної події
             Element nextElement = null;         // Подія, яка станеться найближчою
 
@@ -42,7 +48,7 @@ public class Model {
 
             for (Element element : elements) {
                 if(element.tstate == tcurr) {
-                    element.outAct(tcurr);
+                    element.outAct(tcurr, element.currentClientType);
                 }
             }
             printInfo();

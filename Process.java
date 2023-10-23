@@ -1,4 +1,8 @@
+import org.w3c.dom.events.Event;
+
 public class Process extends Element {
+
+    Event firstProcess;
     public Process(double delay, String name) {
         super(delay, name);
         this.tstate = Double.MAX_VALUE;
@@ -12,13 +16,16 @@ public class Process extends Element {
             this.tstate = tcurr + delay;
             totalWorkTime += delay;
             if (this.next != null) {
-                this.next.getNextElement().inAct(tcurr);
+                this.next.getNextElement(currentClientType).inAct(tcurr, currentClientType);
+            }
+            else if (currentClientType != ClientType.FIRST){
+
             }
     }
 
     @Override
     public void doStatistics(double delta) {
-        this.meanQueue = this.meanQueue + this.queue * delta;
+        this.meanQueue = this.meanQueue + this.queue.size() * delta;
     }
     @Override
     public void printResult() {
@@ -26,4 +33,7 @@ public class Process extends Element {
         System.out.println("failure = " + this.failure);
     }
 
+    public void setNextElement(NextElementsOnClientType next) {
+        this.next = next;
+    }
 }

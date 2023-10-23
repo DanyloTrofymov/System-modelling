@@ -88,5 +88,18 @@ public  class FunRand {
         return a;
     }
 
+    public static double erlang(double mean, int k) {
+        if (mean <= 0 || k <= 0) {
+            throw new IllegalArgumentException("Mean and shape parameter (k) must be positive.");
+        }
+
+        double product = 1.0;
+        for (int i = 0; i < k; i++) {
+            product *= Math.random();
+        }
+
+        return -mean * Math.log(product);
+    }
+
 
 }
