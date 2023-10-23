@@ -10,6 +10,17 @@ public class Main {
         Process process1_2 = new Process(0.3, "Cashier2");
         process1_2.setDistributionType(DistributionType.EXPONENTIAL);
 
+        process1_1.state = 1;
+        process1_2.state = 1;
+
+        process1_1.tstate = FunRand.norm(1, 0.3);
+        process1_2.tstate = FunRand.norm(1, 0.3);
+
+        process1_1.queue = 2;
+        process1_2.queue = 2;
+
+        create.tstate = 0.1;
+
         MultiTaskProcessor multiTaskProcessor1 = new MultiTaskProcessor(List.of(process1_1), "MultiProcess1", 3);
         MultiTaskProcessor multiTaskProcessor2 = new MultiTaskProcessor(List.of(process1_2), "MultiProcess2", 3);
 
