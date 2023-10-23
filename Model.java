@@ -43,6 +43,7 @@ public class Model {
                     element.outAct(tcurr);
                 }
             }
+            tryToSwitchQueue();
             printInfo();
         }
         printResult(timeModeling);
@@ -69,6 +70,31 @@ public class Model {
                 }
             }
             System.out.println();
+        }
+    }
+
+    // method only for bank task
+    public void tryToSwitchQueue() {
+        int minQueue = Integer.MAX_VALUE;
+        int maxQueue = 0;
+        Element minQueueElement = null;
+        Element maxQueueElement = null;
+        for (Element element : elements) {
+            if (element.queue < minQueue) {
+                minQueue = element.queue;
+                minQueueElement = element;
+            }
+            if (element.queue > maxQueue) {
+                maxQueue = element.queue;
+                maxQueueElement = element;
+            }
+        }
+        double randValue = Math.random();
+        if (minQueueElement != null && maxQueueElement != null) {
+            if(maxQueueElement.queue - minQueueElement.queue >= 2 && randValue < 0.5) {
+                minQueueElement.queue += 1;
+                maxQueueElement.queue -= 1;
+            }
         }
     }
 }
