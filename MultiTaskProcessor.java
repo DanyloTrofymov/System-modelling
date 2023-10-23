@@ -3,6 +3,11 @@ import java.util.*;
 public class MultiTaskProcessor extends Element {
     private List<Process> processes;
 
+    protected int totalCustomersExited = 0;
+    protected double totalExitTime = 0.0;
+    protected double lastExitTime = 0.0; // Останній час виходу клієнта
+    protected double totalEnterTimeStart = 0.0;
+    protected double totalEnterTimeEnd = 0.0;
     protected int queue, maxQueue;
     public MultiTaskProcessor(List<Process> processes, String name) {
         super(name);
@@ -20,6 +25,7 @@ public class MultiTaskProcessor extends Element {
         super.inAct(tcurr);
         Process process = getFreeProcess();
         if (process != null) {
+            totalEnterTimeStart += tcurr;
             process.outAct(tcurr);
             setTState();
         } else {
@@ -39,14 +45,20 @@ public class MultiTaskProcessor extends Element {
             process.setState(0);
             process.setTstate(Double.MAX_VALUE);
             setTState();
-            if(this.queue > 0) {
+            if (this.queue > 0) {
                 process.outAct(tcurr);
                 this.queue -= 1;
                 setTState();
             }
-        }
 
+            double exitTime = tcurr; // Час виходу клієнта
+            totalCustomersExited++;
+            totalExitTime += exitTime - lastExitTime; // Різниця між поточним та попереднім часом виходу
+            lastExitTime = exitTime; // Оновлення останнього часу виходу
+            totalEnterTimeEnd += tcurr;
+        }
     }
+
 
     private Process getFreeProcess() {
         for (Process process : processes) {
