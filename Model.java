@@ -5,7 +5,7 @@ public class Model {
     private double tnext;
     private double tcurr;
     private List <Element> elements = new ArrayList<>();
-
+    private List <MultiTaskProcessor> processes;
     public Model(Create create, List<MultiTaskProcessor> process) {
         tnext=0.0;
         tcurr = tnext;
@@ -13,6 +13,7 @@ public class Model {
         for (Element element : process) {
             elements.add(element);
         }
+        processes = process;
     }
 
     /**
@@ -77,9 +78,9 @@ public class Model {
     public void tryToSwitchQueue() {
         int minQueue = Integer.MAX_VALUE;
         int maxQueue = 0;
-        Element minQueueElement = null;
-        Element maxQueueElement = null;
-        for (Element element : elements) {
+        MultiTaskProcessor minQueueElement = null;
+        MultiTaskProcessor maxQueueElement = null;
+        for (MultiTaskProcessor element : processes) {
             if (element.queue < minQueue) {
                 minQueue = element.queue;
                 minQueueElement = element;

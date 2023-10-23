@@ -78,4 +78,8 @@ public class Element {
     protected void setState(int state) {
         this.state = state;
     }
+
+    public int getQueue() {
+        return queue;
+    }
 }

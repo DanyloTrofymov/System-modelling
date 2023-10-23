@@ -54,11 +54,11 @@ public class NextElements {
         int lowestQueue = Integer.MAX_VALUE;
 
         for (NextElement nextElement : nextElements) {
-            if (nextElement.element.queue < lowestQueue) {
-                lowestQueue = nextElement.element.queue;
+            if (nextElement.element.getQueue() < lowestQueue) {
+                lowestQueue = nextElement.element.getQueue();
                 lowestQueueElements.clear(); // Clear the previous list as we found a lower queue
                 lowestQueueElements.add(nextElement);
-            } else if (nextElement.element.queue == lowestQueue) {
+            } else if (nextElement.element.getQueue() == lowestQueue) {
                 lowestQueueElements.add(nextElement);
             }
         }

@@ -108,4 +108,9 @@ public class MultiTaskProcessor extends Element {
     public List<Process> getProcesses() {
         return processes;
     }
+
+    @Override
+    public int getQueue() {
+        return queue;
+    }
 }
