@@ -2,7 +2,6 @@ import org.w3c.dom.events.Event;
 
 public class Process extends Element {
 
-    Event firstProcess;
     public Process(double delay, String name) {
         super(delay, name);
         this.tstate = Double.MAX_VALUE;
@@ -16,11 +15,24 @@ public class Process extends Element {
             this.tstate = tcurr + delay;
             totalWorkTime += delay;
             if (this.next != null) {
+                if (name.equals("Go to doctor"))
+                {
+                    double rand = Math.random();
+                    if( rand < 0.5)
+                        this.currentClientType = ClientType.FIRST;
+                    else
+                        this.currentClientType = ClientType.SECOND;
+                }
                 Element thisNext = this.next.getNextElement(currentClientType);
-                thisNext.inAct(tcurr, currentClientType);
+                if(thisNext != null) {
+                    thisNext.inAct(tcurr, currentClientType);
+                }
+                else {
+                    Model.timeOut.add(tcurr);
+                }
             }
-            else if (currentClientType != ClientType.FIRST){
-
+            else{
+                Model.timeOut.add(tcurr);
             }
     }
 

@@ -10,6 +10,10 @@ NextElementsOnClientType {
     }
 
     public Element getNextElement(ClientType clientType) {
-        return nextElementsOnClientType.get(clientType).getNextElement();
+        NextElements nextElement =  nextElementsOnClientType.get(clientType);
+        if(nextElement != null) {
+            return nextElement.getNextElement();
+        }
+        else return null;
     }
 }

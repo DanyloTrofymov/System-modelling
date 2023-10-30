@@ -5,6 +5,8 @@ public class Model {
     private double tnext;
     private double tcurr;
     private List <Element> elements = new ArrayList<>();
+    public static List<Double> timeIn = new ArrayList<>();
+    public static List<Double> timeOut = new ArrayList<>();
 
     public Model(Create create, List<MultiTaskProcessor> process) {
         tnext=0.0;
@@ -67,6 +69,22 @@ public class Model {
                 }
             }
             System.out.println();
+            double sumTimeIn = 0;
+            double sumTimeOut = 0;
+            for (int i = 0; i < timeOut.size(); i++) {
+                sumTimeIn += timeIn.get(i);
+            }
+            for (Double time : timeOut) {
+                sumTimeOut += time;
+            }
+
+            System.out.println("mean time in system = " + (sumTimeOut - sumTimeIn) / timeIn.size());
+            double intervalTimeIn = 0;
+            for (int i = 0; i < timeIn.size() - 1; i++) {
+                intervalTimeIn += timeIn.get(i + 1) - timeIn.get(i);
+            }
+            intervalTimeIn /= timeIn.size() - 1;
+            System.out.println("interval patient arrival = " + intervalTimeIn);
         }
     }
 }

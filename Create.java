@@ -7,6 +7,7 @@ public class Create extends Element{
     @Override
     public void outAct(double tcurr, ClientType clientType1) {
         super.outAct(tcurr);
+        Model.timeIn.add(tcurr);
         double delay = getDelay();
         totalWorkTime += delay;
         tstate = tcurr + delay;

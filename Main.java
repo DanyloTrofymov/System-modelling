@@ -99,10 +99,19 @@ public class Main {
         map3_2.put(ClientType.THIRD, firstGoToDoctorNextElements);
 
         NextElementsOnClientType afterLab2 = new NextElementsOnClientType(map3_2);
-        goToDoctor.setNextElement(afterLab2);
+        firstLaborant.setNextElement(afterLab2);
+        secondLaborant.setNextElement(afterLab2);
+
+        Map map4 = new HashMap<ClientType, NextElements>();
+        map4.put(ClientType.FIRST, firstDoctorNextElements);
+        map4.put(ClientType.SECOND, null);
+        map4.put(ClientType.THIRD, null);
+
+        NextElementsOnClientType afterCome = new NextElementsOnClientType(map4);
+        goToDoctor.setNextElement(afterCome);
 
 
         Model model = new Model(patient, List.of(multiDoctorProcessor, multiAccompanyingProcessor, multiGoToDoctorProcessor, multiLaborantProcessor, multiGoToLabProcessor, multiregistrationToLabProcessor));
-        model.simulate(1000);
+        model.simulate(10000);
     }
 }
