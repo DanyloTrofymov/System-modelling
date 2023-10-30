@@ -4,19 +4,13 @@ import java.util.ArrayList;
 public class Model {
     private double tnext;
     private double tcurr;
-    int changeQueue = 0;
     private List <Element> elements = new ArrayList<>();
-    private List <MultiTaskProcessor> processes;
 
-    private NextElements create;
-    public Model(NextElements create, List<MultiTaskProcessor> process) {
+    public Model(Create create, List<MultiTaskProcessor> process) {
         tnext=0.0;
         tcurr = tnext;
-        this.create = create;
-        for (Element element : process) {
-            elements.add(element);
-        }
-        processes = process;
+        elements.add(create);
+        elements.addAll(process);
     }
 
     /**
@@ -25,10 +19,6 @@ public class Model {
      */
     public void simulate(double timeModeling){
         while(tcurr<timeModeling) {
-            ArrayList<Element> elements = new ArrayList<>();
-            elements.add(create.getNextElement());
-            elements.addAll(processes);
-
             tnext = Double.MAX_VALUE;       // Час наступної події
             Element nextElement = null;         // Подія, яка станеться найближчою
 

@@ -35,6 +35,10 @@ public class MultiTaskProcessor extends Element {
         super.inAct(tcurr);
         Process process = getFreeProcess();
         if (process != null) {
+            if(isDoctor){
+                double delay = getDelayOnType(currentClientType);
+                process.delay = delay;
+            }
             totalEnterTimeStart += tcurr;
             process.currentClientType = currentClientType;
             process.outAct(tcurr);
@@ -47,6 +51,12 @@ public class MultiTaskProcessor extends Element {
                 this.failure++;
             }
         }
+    }
+
+    @Override
+    public void outAct(double tcurr, ClientType clientType) {
+        this.currentClientType = clientType;
+        outAct(tcurr);
     }
     @Override
     public void outAct(double tcurr) {
@@ -150,5 +160,18 @@ public class MultiTaskProcessor extends Element {
     @Override
     public List<ClientType> getQueue() {
         return queue;
+    }
+
+    private double getDelayOnType(ClientType clientType){
+        switch (clientType){
+            case FIRST:
+                return 15;
+            case SECOND:
+                return 40;
+            case THIRD:
+                return 30;
+            default:
+                return 0.0;
+        }
     }
 }

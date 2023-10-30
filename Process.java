@@ -16,7 +16,8 @@ public class Process extends Element {
             this.tstate = tcurr + delay;
             totalWorkTime += delay;
             if (this.next != null) {
-                this.next.getNextElement(currentClientType).inAct(tcurr, currentClientType);
+                Element thisNext = this.next.getNextElement(currentClientType);
+                thisNext.inAct(tcurr, currentClientType);
             }
             else if (currentClientType != ClientType.FIRST){
 
