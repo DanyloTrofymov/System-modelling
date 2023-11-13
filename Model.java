@@ -32,9 +32,9 @@ public class Model {
                     nextElement = element;
                 }
             }
-            System.out.println("\nIt's time for element in " +
-                    nextElement.name +
-                    ", time = " + tnext);
+            //System.out.println("\nIt's time for element in " +
+            //        nextElement.name +
+            //        ", time = " + tnext);
             for (Element e : elements) {
                 e.doStatistics(tnext - tcurr);
             }
@@ -46,9 +46,9 @@ public class Model {
                 }
             }
             tryToSwitchQueue();
-            printInfo();
+            //printInfo();
         }
-        printResult(timeModeling);
+        //printResult(timeModeling);
     }
     public void printInfo() {
         for (Element e : elements) {

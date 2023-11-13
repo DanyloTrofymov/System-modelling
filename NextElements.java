@@ -9,6 +9,7 @@ public class NextElements {
             for (NextElement nextElement : nextElements) {
                 sum += nextElement.probability;
             }
+            sum = Math.round(sum * 100.0) / 100.0;
             if (sum != 0 && sum != 1) {
                 throw new IllegalArgumentException("Sum of probabilities must be 1");
             }

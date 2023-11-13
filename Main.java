@@ -1,44 +1,110 @@
-import java.util.List;
+import java.util.*;
 
 public class Main {
 
     public static void main(String[] args) {
-        Create create = new Create(0.5, "Create");
-        create.setDistributionType(DistributionType.EXPONENTIAL);
-        Process process1_1 = new Process(0.3, "Cashier1");
-        process1_1.setDistributionType(DistributionType.EXPONENTIAL);
-        Process process1_2 = new Process(0.3, "Cashier2");
-        process1_2.setDistributionType(DistributionType.EXPONENTIAL);
+        Map<Integer, Double> results = new HashMap<>();
+        int k = 5;
 
+        for (int N = 10; N <= 300; N += 10) {
+            double[] Nresults = new double[k];
 
+            for (int i = 0; i < k; i++) {
+                List<Model> model = getNModels(N);
 
-        create.tstate = 0.1;
+                long startTime = System.currentTimeMillis();
+                for (Model m : model)
+                    m.simulate(10000);
 
-        process1_1.state = 1;
-        process1_2.state = 1;
+                long endTime = System.currentTimeMillis();
+                Nresults[i] = endTime - startTime;
+            }
 
-        process1_1.tstate = FunRand.norm(1, 0.3);
-        process1_2.tstate = FunRand.norm(1, 0.3);
+            double averageTime = calculateAverage(Nresults);
+            results.put(N, averageTime);
+        }
 
-        //create process first because MultiTaskProcessor gets time from process
-        MultiTaskProcessor multiTaskProcessor1 = new MultiTaskProcessor(List.of(process1_1), "MultiProcess1", 3);
-        MultiTaskProcessor multiTaskProcessor2 = new MultiTaskProcessor(List.of(process1_2), "MultiProcess2", 3);
-
-
-        multiTaskProcessor1.queue = 2;
-        multiTaskProcessor2.queue = 2;
-
-
-
-        NextElement nextElement1 = new NextElement(multiTaskProcessor1,0.5,  2);
-        NextElement nextElement2 = new NextElement(multiTaskProcessor2, 0.5, 1);
-
-        NextElements nextElements = new NextElements(List.of(nextElement1, nextElement2), NextElementsType.PRIORITY_WITH_QUEUE);
-
-        create.setNextElement(nextElements);
-
-        List<MultiTaskProcessor> multiTaskProcessors = List.of(multiTaskProcessor1, multiTaskProcessor2);
-        Model model = new Model(create, multiTaskProcessors);
-        model.simulate(1000);
+        printResults(results);
     }
+
+    public static List<Model> getNModels (int N){
+        List<Model> models = new ArrayList<>();
+        for (int i = 0; i < N; i++){
+            models.add(createOneChainModel());
+        }
+        return models;
+    }
+    public static Model createTwoChainModel() {
+        Create create = new Create(1, "Create");
+        create.setDistributionType(DistributionType.EXPONENTIAL);
+        List<NextElement> nextElementList = new ArrayList<>();
+        List<MultiTaskProcessor> multiTaskProcessors1 = new ArrayList<>();
+        List<MultiTaskProcessor> multiTaskProcessors2 = new ArrayList<>();
+        Process Process1 = new Process(1, "Process1");
+        Process1.setDistributionType(DistributionType.EXPONENTIAL);
+
+        MultiTaskProcessor process = new MultiTaskProcessor(List.of(Process1), "MultiTaskProcessor1", Integer.MAX_VALUE);
+
+        NextElement hostesNext1 = new NextElement(process, 1);
+        nextElementList.add(hostesNext1);
+
+        multiTaskProcessors1.add(process);
+        create.setNextElement(new NextElements(nextElementList, NextElementsType.PRIORITY));
+
+
+        Process Process2 = new Process(1, "Process2");
+        Process2.setDistributionType(DistributionType.EXPONENTIAL);
+
+        MultiTaskProcessor process2 = new MultiTaskProcessor(List.of(Process2), "MultiTaskProcessor2", Integer.MAX_VALUE);
+
+        NextElement hostesNext2 = new NextElement(process2, 1);
+        nextElementList.add(hostesNext2);
+
+        multiTaskProcessors2.add(process2);
+
+        process.setNextElement(new NextElements(List.of(new NextElement(process, 1)), NextElementsType.PRIORITY));
+
+        multiTaskProcessors1.addAll(multiTaskProcessors2);
+        return new Model(create, multiTaskProcessors1);
+    }
+
+    public static Model createOneChainModel() {
+        Create create = new Create(1, "Create");
+        create.setDistributionType(DistributionType.EXPONENTIAL);
+        List<NextElement> nextElementList = new ArrayList<>();
+        List<MultiTaskProcessor> multiTaskProcessors = new ArrayList<>();
+
+        Process Process1 = new Process(1, "Process1");
+        Process1.setDistributionType(DistributionType.EXPONENTIAL);
+
+        MultiTaskProcessor process = new MultiTaskProcessor(List.of(Process1), "MultiTaskProcessor", Integer.MAX_VALUE);
+
+        NextElement hostesNext1 = new NextElement(process, 1);
+        nextElementList.add(hostesNext1);
+
+        multiTaskProcessors.add(process);
+        create.setNextElement(new NextElements(nextElementList, NextElementsType.PRIORITY));
+        return new Model(create, multiTaskProcessors);
+    }
+
+    private static double calculateAverage(double[] array) {
+        double sum = 0;
+        for (double value : array) {
+            sum += value;
+        }
+        return sum / array.length;
+    }
+
+    private static void printResults(Map<Integer, Double> results) {
+        Map<Integer, Double> sortedResults = new TreeMap<>(results);
+        System.out.println("Results:");
+        System.out.println("N\tAverage Time (ms)");
+
+        System.out.println("N" + ";" + "time" + ";");
+        for (Map.Entry<Integer, Double> entry : sortedResults.entrySet()) {
+            System.out.println(entry.getKey() + ";" + entry.getValue() + ";");
+        }
+
+    }
+
 }

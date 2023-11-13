@@ -2,6 +2,7 @@ public class Process extends Element {
     public Process(double delay, String name) {
         super(delay, name);
         this.tstate = Double.MAX_VALUE;
+        this.distributionType = DistributionType.EXPONENTIAL;
     }
 
     @Override

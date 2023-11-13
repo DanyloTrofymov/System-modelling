@@ -11,7 +11,7 @@ public class Element {
 
     public Element(String name) {
         this.delay = 0;
-        maxQueue = 0;
+        maxQueue = Integer.MAX_VALUE;
         this.name = name;
         tstate = 0;
         next = null;
@@ -19,7 +19,7 @@ public class Element {
     }
     public Element(double delay, String name) {
         this.delay = delay;
-        maxQueue = 0;
+        maxQueue = Integer.MAX_VALUE;
         this.name = name;
         tstate = 0;
         next = null;

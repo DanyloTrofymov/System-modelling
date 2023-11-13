@@ -125,4 +125,8 @@ public class MultiTaskProcessor extends Element {
     public int getQueue() {
         return queue;
     }
+
+    public Process getFirstProcess(){
+        return processes.get(0);
+    }
 }
