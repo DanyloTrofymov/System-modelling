@@ -26,7 +26,11 @@ public class Process extends Element {
                this.next.inAct(tcurr, currentTaskClass);
             }
             else{
-                Model.timeOut.add(tcurr);
+                if(currentTaskClass != TaskClass.C) {
+                    Model.timeOut.add(tcurr);
+                } else if (this.name.equals("Process 1")){
+                    Model.timeOut.add(tcurr);
+                }
             }
         addServed();
     }
@@ -40,7 +44,11 @@ public class Process extends Element {
             this.next.inAct(tcurr, currentTaskClass);
         }
         else{
-            Model.timeOut.add(tcurr);
+            if(currentTaskClass != TaskClass.C) {
+                Model.timeOut.add(tcurr);
+            } else if (this.name.equals("Process 1")){
+                Model.timeOut.add(tcurr);
+            }
         }
         addServed();
     }
@@ -60,7 +68,7 @@ public class Process extends Element {
     }
 
     @Override
-    public void doStatistics(double delta) {
+    public void calcMeanQueueLength(double delta) {
         this.meanQueue = this.meanQueue + this.queue.size() * delta;
     }
     @Override

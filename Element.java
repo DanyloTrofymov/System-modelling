@@ -57,7 +57,7 @@ public class Element {
         System.out.println(name+ " served = "+ served);
     }
 
-    public void doStatistics(double delta){
+    public void calcMeanQueueLength(double delta){
     }
     public void setNextElement(Element next) {
         this.next = next;

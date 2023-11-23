@@ -1,15 +1,13 @@
 import java.util.*;
 
 public class MSS extends Element {
-    private List<Process> processes;
+    protected List<Process> processes;
     protected int totalCustomersExited = 0;
     protected double totalExitTime = 0.0;
     protected double lastExitTime = 0.0; // Останній час виходу клієнта
     protected double totalEnterTimeStart = 0.0;
     protected double totalEnterTimeEnd = 0.0;
     protected int maxQueue;
-
-    int counter = 0;
 
     HashMap<TaskClass, Integer> priority;
     protected List<TaskClass> queue = new ArrayList<>();
@@ -43,7 +41,7 @@ public class MSS extends Element {
         if (currentTaskClass == TaskClass.C) {
             int freeProcessCount = getFreeProcessCount();
             if (freeProcessCount != processes.size()) {
-                tryToAddToQueue();
+                tryToAddToQueue(tcurr);
             } else {
                 for (Process process : processes) {
                     inActProcessing(tcurr, delay, process);
@@ -54,20 +52,23 @@ public class MSS extends Element {
             if (process != null) {
                 inActProcessing(tcurr, delay, process);
             } else {
-                tryToAddToQueue();
+                tryToAddToQueue(tcurr);
             }
         }
     }
     private void inActProcessing(double tcurr, double delay, Process process) {
         totalEnterTimeStart += tcurr;
         process.currentTaskClass = currentTaskClass;
+        Model.queueIn.add(tcurr);
+        Model.queueOut.add(tcurr);
         process.outAct(tcurr, delay);
         setTState();
     }
 
-    private void tryToAddToQueue(){
+    private void tryToAddToQueue(double tcurr){
         if (this.queue.size() < this.maxQueue) {
             this.queue.add(currentTaskClass);
+            Model.queueIn.add(tcurr);
         } else {
             this.failure++;
         }
@@ -90,26 +91,28 @@ public class MSS extends Element {
             if (freeProcessCount != processes.size()) {
                 Process process = getThisProcess(tcurr);
                 if (process != null) {
-                    outActPprocessing(tcurr, null, process, delay);
-                    this.queue.remove(process.currentTaskClass);
+                    outActProcessing(tcurr, null, process, delay);
                 }
             } else {
+
                 for (Process process : processes) {
-                    outActPprocessing(tcurr, taskClass, process, delay);
+                    outActProcessing(tcurr, taskClass, process, delay);
                 }
-                this.queue.remove(taskClass);
             }
         }
         else {
             Process process = getThisProcess(tcurr);
             if (process != null) {
-                outActPprocessing(tcurr, taskClass, process, delay);
+                outActProcessing(tcurr, taskClass, process, delay);
             }
-            this.queue.remove(taskClass);
         }
     }
 
-    private void outActPprocessing(double tcurr, TaskClass taskClass, Process process, double delay) {
+    private void outActProcessing(double tcurr, TaskClass taskClass, Process process, double delay) {
+        if(taskClass != null){
+            this.queue.remove(taskClass);
+            Model.queueOut.add(tcurr);
+        }
         process.setState(0);
         process.setTstate(Double.MAX_VALUE);
         setTState();
@@ -117,7 +120,6 @@ public class MSS extends Element {
         if (taskClass != null) {
             process.currentTaskClass = taskClass;
             process.outAct(tcurr, delay);
-            this.queue.remove(taskClass);
             setTState();
         }
 
@@ -174,7 +176,7 @@ public class MSS extends Element {
     }
 
     @Override
-    public void doStatistics(double delta) {
+    public void calcMeanQueueLength(double delta) {
         meanQueue = meanQueue + queue.size() * delta;
     }
 
@@ -194,7 +196,7 @@ public class MSS extends Element {
         System.out.println(name+ " served = "+ (servedA + servedB + (servedC/2)));
         System.out.println("\tServed A = " + servedA);
         System.out.println("\tServed B = " + servedB);
-        System.out.println("\tServed C = " + servedC/2);
+        System.out.println("\tServed C = " + servedC/processes.size());
         System.out.println("failure = " + this.failure);
     }
 

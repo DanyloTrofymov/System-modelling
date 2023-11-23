@@ -1,3 +1,4 @@
+import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -7,6 +8,10 @@ public class Model {
     private List <Element> elements = new ArrayList<>();
     public static List<Double> timeIn = new ArrayList<>();
     public static List<Double> timeOut = new ArrayList<>();
+
+    public static List<Double> queueIn = new ArrayList<>();
+    public static List<Double> queueOut = new ArrayList<>();
+    private double timeModeling;
 
     public Model(List<Create> create, List<MSS> process) {
         tnext=0.0;
@@ -20,6 +25,7 @@ public class Model {
      * @param timeModeling - час моделювання в умовних одиницях часу
      */
     public void simulate(double timeModeling){
+        this.timeModeling = timeModeling;
         while(tcurr<timeModeling) {
             tnext = Double.MAX_VALUE;       // Час наступної події
             Element nextElement = null;         // Подія, яка станеться найближчою
@@ -30,11 +36,11 @@ public class Model {
                     nextElement = element;
                 }
             }
-            System.out.println("\nIt's time for element in " +
+            /*System.out.println("\nIt's time for element in " +
                     nextElement.name +
-                    ", time = " + tnext);
+                    ", time = " + tnext);*/
             for (Element e : elements) {
-                e.doStatistics(tnext - tcurr);
+                e.calcMeanQueueLength(tnext - tcurr);
             }
             tcurr = tnext;
 
@@ -43,9 +49,9 @@ public class Model {
                     element.outAct(tcurr, element.currentTaskClass);
                 }
             }
-            printInfo();
+            //printInfo();
         }
-        printResult(timeModeling);
+        //printResult();
     }
     public void printInfo() {
         for (Element e : elements) {
@@ -53,7 +59,34 @@ public class Model {
                 e.printInfo();
         }
     }
-    public void printResult( double timeModeling) {
+    public HashMap<StatisticDataTypes, Double> getStatistics(){
+        HashMap<StatisticDataTypes, Double> statistics = new HashMap<>();
+        double meanQueueLength = 0;
+        double servedA = 0;
+        double servedB = 0;
+        double servedC = 0;
+        int processCount = 0;
+        for (Element e : elements) {
+            if (e instanceof MSS) {
+                MSS p = (MSS) e;
+                meanQueueLength = p.meanQueue / tcurr;
+                for (Process process : p.processes) {
+                    servedA += process.servedA;
+                    servedB += process.servedB;
+                    servedC += process.servedC;
+                    processCount = p.processes.size();
+                }
+            }
+        }
+        statistics.put(StatisticDataTypes.meanQueueLength, meanQueueLength);
+        statistics.put(StatisticDataTypes.meanTimeInQueue, getMeanTimeInQueue());
+        statistics.put(StatisticDataTypes.meanTimeInSystem, getMeanTimeInSystem());
+        statistics.put(StatisticDataTypes.servedA, servedA);
+        statistics.put(StatisticDataTypes.servedB, servedB);
+        statistics.put(StatisticDataTypes.servedC, servedC / processCount);
+        return statistics;
+    }
+    public void printResult() {
         System.out.println("\n-------------RESULTS-------------");
         for (Element e : elements) {
             e.printResult();
@@ -70,21 +103,32 @@ public class Model {
             }
             System.out.println();
         }
+
+        System.out.println("mean time in system = " + getMeanTimeInSystem());
+
+        System.out.println("mean time in queue = " + getMeanTimeInQueue());
+    }
+
+    private double getMeanTimeInSystem(){
         double sumTimeIn = 0;
         double sumTimeOut = 0;
-        for (int i = 0; i < timeOut.size(); i++) {
+        int elementCount = timeOut.size();
+        for (int i = 0; i < elementCount; i++) {
             sumTimeIn += timeIn.get(i);
+            sumTimeOut += timeOut.get(i);
         }
-        for (Double time : timeOut) {
-            sumTimeOut += time;
+        return (sumTimeOut - sumTimeIn) / elementCount;
+    }
+
+    private double getMeanTimeInQueue(){
+        double sumQueueIn = 0;
+        double sumQueueOut = 0;
+        int elementCount = queueOut.size();
+        for(int i = 0; i < elementCount; i++){
+            sumQueueIn += queueIn.get(i);
+            sumQueueOut += queueOut.get(i);
         }
 
-        System.out.println("mean time in system = " + (sumTimeOut - sumTimeIn) / timeIn.size());
-        double intervalTimeIn = 0;
-        for (int i = 0; i < timeIn.size() - 1; i++) {
-            intervalTimeIn += timeIn.get(i + 1) - timeIn.get(i);
-        }
-        intervalTimeIn /= timeIn.size() - 1;
-        System.out.println("interval patient arrival = " + intervalTimeIn);
+        return (sumQueueOut - sumQueueIn) / elementCount;
     }
 }
