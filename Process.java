@@ -1,8 +1,8 @@
 public class Process extends Element {
 
-    private int servedA = 0;
-    private int servedB = 0;
-    private int servedC = 0;
+    protected int servedA = 0;
+    protected int servedB = 0;
+    protected int servedC = 0;
 
     public Process(String name) {
         super(0, name);

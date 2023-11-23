@@ -9,6 +9,8 @@ public class MSS extends Element {
     protected double totalEnterTimeEnd = 0.0;
     protected int maxQueue;
 
+    int counter = 0;
+
     HashMap<TaskClass, Integer> priority;
     protected List<TaskClass> queue = new ArrayList<>();
 
@@ -37,24 +39,39 @@ public class MSS extends Element {
     @Override
     public void inAct(double tcurr) {
         super.inAct(tcurr);
-        Process process = getFreeProcess();
-        if (process != null) {
-            double delay = getDelayOnType(currentTaskClass);
-            process.delay = delay;
-            totalEnterTimeStart += tcurr;
-            process.currentTaskClass = currentTaskClass;
-            process.outAct(tcurr);
-            setTState();
-        } else {
-            if(this.queue.size() < this.maxQueue) {
-                this.queue.add(currentTaskClass);
+        double delay = FunRand.exp(getDelayOnType(currentTaskClass));
+        if (currentTaskClass == TaskClass.C) {
+            int freeProcessCount = getFreeProcessCount();
+            if (freeProcessCount != processes.size()) {
+                tryToAddToQueue();
+            } else {
+                for (Process process : processes) {
+                    inActProcessing(tcurr, delay, process);
+                }
             }
-            else {
-                this.failure++;
+        } else {
+            Process process = getFreeProcess();
+            if (process != null) {
+                inActProcessing(tcurr, delay, process);
+            } else {
+                tryToAddToQueue();
             }
         }
     }
+    private void inActProcessing(double tcurr, double delay, Process process) {
+        totalEnterTimeStart += tcurr;
+        process.currentTaskClass = currentTaskClass;
+        process.outAct(tcurr, delay);
+        setTState();
+    }
 
+    private void tryToAddToQueue(){
+        if (this.queue.size() < this.maxQueue) {
+            this.queue.add(currentTaskClass);
+        } else {
+            this.failure++;
+        }
+    }
     @Override
     public void outAct(double tcurr, TaskClass taskClass) {
         outAct(tcurr);
@@ -73,12 +90,12 @@ public class MSS extends Element {
             if (freeProcessCount != processes.size()) {
                 Process process = getThisProcess(tcurr);
                 if (process != null) {
-                    processing(tcurr, null, process, delay);
+                    outActPprocessing(tcurr, null, process, delay);
                     this.queue.remove(process.currentTaskClass);
                 }
             } else {
                 for (Process process : processes) {
-                    processing(tcurr, taskClass, process, delay);
+                    outActPprocessing(tcurr, taskClass, process, delay);
                 }
                 this.queue.remove(taskClass);
             }
@@ -86,13 +103,13 @@ public class MSS extends Element {
         else {
             Process process = getThisProcess(tcurr);
             if (process != null) {
-                processing(tcurr, taskClass, process, delay);
+                outActPprocessing(tcurr, taskClass, process, delay);
             }
             this.queue.remove(taskClass);
         }
     }
 
-    private void processing(double tcurr, TaskClass taskClass, Process process, double delay) {
+    private void outActPprocessing(double tcurr, TaskClass taskClass, Process process, double delay) {
         process.setState(0);
         process.setTstate(Double.MAX_VALUE);
         setTState();
@@ -164,11 +181,20 @@ public class MSS extends Element {
     @Override
     public void printResult() {
         int totalServed = 0;
+        int servedA = 0;
+        int servedB = 0;
+        int servedC = 0;
         for (Process process : processes) {
             process.printResult();
-            totalServed += process.served;
+            servedA += process.servedA;
+            servedB += process.servedB;
+            servedC += process.servedC;
         }
-        System.out.println(name+ " served = "+ totalServed);
+
+        System.out.println(name+ " served = "+ (servedA + servedB + (servedC/2)));
+        System.out.println("\tServed A = " + servedA);
+        System.out.println("\tServed B = " + servedB);
+        System.out.println("\tServed C = " + servedC/2);
         System.out.println("failure = " + this.failure);
     }
 
