@@ -8,10 +8,10 @@ public class Model {
     public static List<Double> timeIn = new ArrayList<>();
     public static List<Double> timeOut = new ArrayList<>();
 
-    public Model(Create create, List<MultiTaskProcessor> process) {
+    public Model(List<Create> create, List<MSS> process) {
         tnext=0.0;
         tcurr = tnext;
-        elements.add(create);
+        elements.addAll(create);
         elements.addAll(process);
     }
 
@@ -40,7 +40,7 @@ public class Model {
 
             for (Element element : elements) {
                 if(element.tstate == tcurr) {
-                    element.outAct(tcurr, element.currentClientType);
+                    element.outAct(tcurr, element.currentTaskClass);
                 }
             }
             printInfo();
@@ -57,8 +57,8 @@ public class Model {
         System.out.println("\n-------------RESULTS-------------");
         for (Element e : elements) {
             e.printResult();
-            if (e instanceof MultiTaskProcessor) {
-                MultiTaskProcessor p = (MultiTaskProcessor) e;
+            if (e instanceof MSS) {
+                MSS p = (MSS) e;
                 System.out.println("mean length of queue = " +
                         p.meanQueue / tcurr
                         + "\nfailure probability = " +

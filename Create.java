@@ -1,19 +1,17 @@
-import java.util.List;
-
 public class Create extends Element{
-    public Create(double delay, String name) {
+    TaskClass currentTaskClass;
+    public Create(double delay, String name, TaskClass taskClass) {
         super(delay, name);
+        this.currentTaskClass = taskClass;
     }
     @Override
-    public void outAct(double tcurr, ClientType clientType1) {
+    public void outAct(double tcurr, TaskClass taskClass1) {
         super.outAct(tcurr);
         Model.timeIn.add(tcurr);
         double delay = getDelay();
         totalWorkTime += delay;
         tstate = tcurr + delay;
-        ClientType clientType = getClientByProbability();
-        Element nextEl = next.getNextElement(clientType);
-        nextEl.inAct(tcurr, clientType);
+        next.inAct(tcurr, currentTaskClass);
     }
     @Override
     public void doStatistics(double delta) {
@@ -21,16 +19,8 @@ public class Create extends Element{
             meanQueue = meanQueue + queue.size() * delta;
         }
     }
-
-    public ClientType getClientByProbability() {
-        double probability = Math.random();
-        if (probability < 0.5) {
-            return ClientType.FIRST;
-        } else if (probability < 0.6) {
-            return ClientType.SECOND;
-        } else {
-            return ClientType.THIRD;
-        }
+    @Override
+    public void printResult(){
+        System.out.println(name+ " created = "+ served);
     }
-
 }

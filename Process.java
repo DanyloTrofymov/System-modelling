@@ -1,6 +1,14 @@
-import org.w3c.dom.events.Event;
-
 public class Process extends Element {
+
+    private int servedA = 0;
+    private int servedB = 0;
+    private int servedC = 0;
+
+    public Process(String name) {
+        super(0, name);
+        this.state = 0;
+        this.tstate = Double.MAX_VALUE;
+    }
 
     public Process(double delay, String name) {
         super(delay, name);
@@ -15,25 +23,40 @@ public class Process extends Element {
             this.tstate = tcurr + delay;
             totalWorkTime += delay;
             if (this.next != null) {
-                if (name.equals("Go to doctor"))
-                {
-                    double rand = Math.random();
-                    if( rand < 0.5)
-                        this.currentClientType = ClientType.FIRST;
-                    else
-                        this.currentClientType = ClientType.SECOND;
-                }
-                Element thisNext = this.next.getNextElement(currentClientType);
-                if(thisNext != null) {
-                    thisNext.inAct(tcurr, currentClientType);
-                }
-                else {
-                    Model.timeOut.add(tcurr);
-                }
+               this.next.inAct(tcurr, currentTaskClass);
             }
             else{
                 Model.timeOut.add(tcurr);
             }
+        addServed();
+    }
+
+    public void outAct(double tcurr, double delay) {
+        super.outAct(tcurr);
+        this.state = 1;
+        this.tstate = tcurr + delay;
+        totalWorkTime += delay;
+        if (this.next != null) {
+            this.next.inAct(tcurr, currentTaskClass);
+        }
+        else{
+            Model.timeOut.add(tcurr);
+        }
+        addServed();
+    }
+
+    private void addServed() {
+        switch (currentTaskClass) {
+            case A:
+                servedA++;
+                break;
+            case B:
+                servedB++;
+                break;
+            case C:
+                servedC++;
+                break;
+        }
     }
 
     @Override
@@ -43,10 +66,12 @@ public class Process extends Element {
     @Override
     public void printResult() {
         super.printResult();
-        System.out.println("failure = " + this.failure);
+        System.out.println("\tServed A = " + this.servedA);
+        System.out.println("\tServed B = " + this.servedB);
+        System.out.println("\tServed C = " + this.servedC);
     }
 
-    public void setNextElement(NextElementsOnClientType next) {
+    public void setNextElement(Element next) {
         this.next = next;
     }
 }

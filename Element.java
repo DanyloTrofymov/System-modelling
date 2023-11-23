@@ -4,10 +4,9 @@ public class Element {
     protected double meanQueue, tstate, delay, delayfrom, delayto, totalWorkTime;
     protected int state, maxQueue, failure, served, k;
 
-    protected ClientType currentClientType;
-    protected NextElementsOnClientType next;
-
-    protected List<ClientType> queue;
+    protected TaskClass currentTaskClass;
+    protected Element next;
+    protected List<TaskClass> queue;
     protected DistributionType distributionType = DistributionType.EXPONENTIAL;
 
     protected String name;
@@ -38,14 +37,14 @@ public class Element {
 
     public void inAct(double tcurr) {
     }
-    public void inAct(double tcurr, ClientType clientType) {
+    public void inAct(double tcurr, TaskClass taskClass) {
     }
 
     public void outAct(double tcurr){
         served++;
     }
 
-    public void outAct(double tcurr, ClientType clientType){
+    public void outAct(double tcurr, TaskClass taskClass){
         served++;
     }
     protected void printInfo() {
@@ -60,7 +59,7 @@ public class Element {
 
     public void doStatistics(double delta){
     }
-    public void setNextElement(NextElementsOnClientType next) {
+    public void setNextElement(Element next) {
         this.next = next;
     }
 
@@ -79,10 +78,6 @@ public class Element {
         }
     }
 
-    public void setDistributionType(DistributionType distributionType) {
-        this.distributionType = distributionType;
-    }
-
     protected void setTstate(double tstate) {
         this.tstate = tstate;
     }
@@ -91,19 +86,5 @@ public class Element {
         this.state = state;
     }
 
-    public List<ClientType> getQueue() {
-        return queue;
-    }
 
-    public void setUniformDistribution(double delayfrom, double delayto) {
-        distributionType = DistributionType.UNIFORM;
-        this.delayfrom = delayfrom;
-        this.delayto = delayto;
-    }
-
-    public void setErlangDistribution(double mean, int k) {
-        distributionType = DistributionType.ERLANG;
-        this.delay = mean;
-        this.k = k;
-    }
 }
