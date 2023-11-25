@@ -9,6 +9,8 @@ public class MSS extends Element {
     protected double totalEnterTimeEnd = 0.0;
     protected int maxQueue;
 
+    protected double meanQueue = 0.0;
+
     HashMap<TaskClass, Integer> priority;
     protected List<TaskClass> queue = new ArrayList<>();
 
@@ -175,7 +177,6 @@ public class MSS extends Element {
         }
     }
 
-    @Override
     public void calcMeanQueueLength(double delta) {
         meanQueue = meanQueue + queue.size() * delta;
     }

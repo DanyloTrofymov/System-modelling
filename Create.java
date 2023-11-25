@@ -14,12 +14,6 @@ public class Create extends Element{
         next.inAct(tcurr, currentTaskClass);
     }
     @Override
-    public void calcMeanQueueLength(double delta) {
-        if (queue != null) {
-            meanQueue = meanQueue + queue.size() * delta;
-        }
-    }
-    @Override
     public void printResult(){
         System.out.println(name+ " created = "+ served);
     }

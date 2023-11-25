@@ -68,10 +68,6 @@ public class Process extends Element {
     }
 
     @Override
-    public void calcMeanQueueLength(double delta) {
-        this.meanQueue = this.meanQueue + this.queue.size() * delta;
-    }
-    @Override
     public void printResult() {
         super.printResult();
         System.out.println("\tServed A = " + this.servedA);

@@ -40,7 +40,10 @@ public class Model {
                     nextElement.name +
                     ", time = " + tnext);*/
             for (Element e : elements) {
-                e.calcMeanQueueLength(tnext - tcurr);
+                if(e instanceof MSS){
+                    MSS p = (MSS) e;
+                    p.calcMeanQueueLength(tnext - tcurr);
+                }
             }
             tcurr = tnext;
 

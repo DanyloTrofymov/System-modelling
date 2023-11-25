@@ -1,8 +1,8 @@
 import java.util.List;
 
 public class Element {
-    protected double meanQueue, tstate, delay, delayfrom, delayto, totalWorkTime;
-    protected int state, maxQueue, failure, served, k;
+    protected double tstate, delay, delayfrom, delayto, totalWorkTime;
+    protected int state, failure, served, k;
 
     protected TaskClass currentTaskClass;
     protected Element next;
@@ -13,7 +13,6 @@ public class Element {
 
     public Element(String name) {
         this.delay = 0;
-        maxQueue = 0;
         this.name = name;
         tstate = 0;
         next = null;
@@ -21,20 +20,11 @@ public class Element {
     }
     public Element(double delay, String name) {
         this.delay = delay;
-        maxQueue = 0;
         this.name = name;
         tstate = 0;
         next = null;
 
     }
-    public Element(double delay, String name, int maxQueue) {
-        this.delay = delay;
-        this.maxQueue = maxQueue;
-        this.name = name;
-        tstate = 0;
-        next = null;
-    }
-
     public void inAct(double tcurr) {
     }
     public void inAct(double tcurr, TaskClass taskClass) {

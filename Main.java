@@ -4,8 +4,9 @@ public class Main {
 
     public static void main(String[] args) {
         ArrayList<HashMap<TaskClass, Integer>> priorities = getAllNecessaryCombinations();
-        int countOfTests = 10;
-
+        int countOfTests = 50;
+        double timeModeling = 10000;
+        System.out.println("Time modeling = " + timeModeling);
         for (HashMap<TaskClass, Integer> priority : priorities) {
             HashMap<StatisticDataTypes, Double> result = initializeResult();
             for(int i = 0; i < countOfTests; i++) {
@@ -23,7 +24,7 @@ public class Main {
                 taskC.setNextElement(mss);
 
                 Model model = new Model(List.of(taskA, taskB, taskC), List.of(mss));
-                model.simulate(10000);
+                model.simulate(timeModeling);
                 HashMap<StatisticDataTypes, Double> localResult = model.getStatistics();
                 result = addLocalResultToResult(result, localResult);
             }
